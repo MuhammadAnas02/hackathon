@@ -13,12 +13,12 @@ export default function Navbar() {
         <ul className='flex gap-x-[75px] justify-end mx-auto'>
             <Link href={'/'}><li>Home</li></Link>
             <Link href={'/Product'}><li>Shop</li></Link>
-            <Link href={'About'}><li>About</li></Link>
-            <Link href={'/MyAccounts'}><li>Contact</li></Link>
+            <Link href={'MyAccount'}><li>About</li></Link>
+            <Link href={'/Contact'}><li>Contact</li></Link>
         </ul>
         <ul className='flex gap-x-[30px]  '>
             <li><IoIosContact size={20}/></li>
-            <li><BsCart3 size={20}/></li>
+            <Link href={'/cart'} > <li><BsCart3 size={20}/></li></Link>
             <li><CiSearch size={20}/></li>
             <li><FaRegHeart size={20}/></li>
            

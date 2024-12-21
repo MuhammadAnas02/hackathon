@@ -1,110 +1,85 @@
-import Link from 'next/link'
 import React from 'react'
-import Bannersa from '@/../Public/assets/banners.png'
+import product from '@/../Public/assets/product.png'
+import Link from 'next/link'
 import Image from 'next/image'
+import logo from '@/../Public/assets/logo.png'
+import NewArrival from '@/../Public/assets/NewArrivals.png'
+import { AiFillDelete } from "react-icons/ai";
+import { PiGreaterThanLight } from "react-icons/pi";
 
 export default function Cart() {
   return (
-    <div>
-  <section className="relative h-[60vh] bg-cover bg-center bg-shop-bg">
-    <div className="absolute inset-0 bg-black opacity-50"></div>
-    <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center">
-      <div className="mb-4">
-        <Image src={Bannersa}
-        alt='Bans'
-          className="object-cover rounded-full"
-        />
+    <div className='w-full'>
+       <div className='w-full mx-auto h-[316px] 2xl:w-[1600px] object-fill' style={{ backgroundImage: `url(${product.src})` }}>
+        <Image src={logo} alt='logo'  className='mx-auto pt-[40px] w-[90px] '></Image>
+
+        <h1 className='text-center text-3xl font-bold pt-[10px]'>Shop</h1>
+    {/* //there is a breadcrumb but i dont have time to put this here */}
+        <div className='flex mx-[740px]'>
+        <Link href={'/'} className='font-semibold'>Home</Link>
+        <PiGreaterThanLight size={15} className='mt-1.5'/> 
+        <Link href={'/Product'}> Cart</Link>
+        </div>
+
+
       </div>
-      <h1 className="text-5xl font-bold">Cart</h1>
-      <p className="text-xl mt-4">
-        <Link href="/">Home</Link> Cart
-      </p>
-    </div>
-  </section>
 
-  <section className="bg-white py-10">
-    <div className="container mx-auto px-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-6 md:w-[60%]">
-          <div className="flex gap-4">
-            <button className="px-4 py-2 border border-transparent hover:bg-amber-100 transition">Product</button>
-            <button className="px-4 py-2 border border-transparent hover:bg-amber-100 transition">Price</button>
-            <button className="px-4 py-2 border border-transparent hover:bg-amber-100 transition">Quantity</button>
-            <button className="px-4 py-2 border border-transparent hover:bg-amber-100 transition">Subtotal</button>
-          </div>
+      <div className='mx-auto 2xl:w-[1600px] bg-white mt-5  flex'>
+         <div>
+         <div className='grid grid-cols-4 px-16  bg-[#FFF9E5] mx-[60px] w-[800px] py-4 gap-x-8'>
 
-          <div className="grid grid-cols-5 gap-4 mt-6">
-            <div></div>
-            <div className="text-gray-700">
-              <h2 className="text-lg font-semibold">Asgaard Sofa</h2>
-            </div>
-            <div className="text-gray-500">
-              <p>Rs. 250,000.00</p>
-            </div>
-            <div>
-              <input
-                type="number"
-                value="1"
-                className="w-full p-2 border border-gray-300 rounded-md text-center"
-              />
-            </div>
-            <div>
-              <p className="font-semibold">Rs. 250,000.00</p>
-            </div>
+<Link href={'/'}>Product</Link>
+<Link href={'/'}>Price</Link>
+<Link href={'/'}>Quantity</Link>
+<Link href={'/'}>Total</Link>
+</div> 
+<div className='grid grid-cols-6 px-5  mt-10  mx-[60px] w-[800px] py-4 gap-x-8'>
+  <div className=' bg-primary rounded-md '><Image src={NewArrival} sizes='30'  alt='cart'></Image></div>
+  <p className='text-[#9F9F9F] mt-6'>Asgaard sofa</p>
+  <div className='text-[#9F9F9F] mt-6'>Rs. 25,000.00</div>
+  <div className='text-[#9F9F9F] mt-6 border-[#9F9F9F] '>1</div>
+  <div className='text-[#9F9F9F] mt-6'>Rs. 25,000.00</div>
+  <AiFillDelete size={25} className='text-primary  mt-6'/>
 
-            <div className="flex justify-center">
-              {/* <Image
-                src="/image/asgaardsofa.jpeg"
-                alt="Asgaard Sofa"
-                width={150}
-                height={150}
-                className="object-cover"
-              /> */}
-            </div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </div>
 
-        <div className="space-y-6">
-          <h1 className="text-2xl font-bold mb-4 text-center">Cart Totals</h1>
-          <div className="flex justify-between py-2 border-b">
-            <span className="text-lg font-medium">Subtotal</span>
-            <span className="text-lg font-medium">Rs. 250,000.00</span>
-          </div>
-          <div className="flex justify-between py-2 border-b">
-            <span className="text-xl font-semibold">Total</span>
-            <span className="text-xl font-semibold text-yellow-500">Rs. 250,000.00</span>
-          </div>
-          <button className="w-full py-2 bg-transparent border border-black rounded-md text-black text-lg hover:bg-black hover:text-white transition mt-4">
-            Checkout
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section className="bg-gray-100 text-black py-10">
-    <div className="container mx-auto px-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <h2 className="text-black font-bold text-3xl text-center">Free Delivery</h2>
-          <p className="text-lg text-gray-700">For all orders over $50, consectetur adipim scing elit.</p>
-        </div>
-        <div>
-          <h2 className="text-black font-bold text-3xl text-center">90 Days Return</h2>
-          <p className="text-lg text-gray-700">If the product has an issue, consectetur adipim scing elit.</p>
-        </div>
-        <div>
-          <h2 className="text-black font-bold text-3xl text-center">Secure Payments</h2>
-          <p className="text-lg text-gray-700">100% secure payments, consectetur adipim scing elit.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 </div>
+         </div>
+          <div>
+          <div className='bg-[#FFF9E5] w-[360px] h-[350px] ml-5 mt-2'>
+            <h1 className='text-2xl font-semibold ml-5 mt-5 text-center pt-5'>Cart Total</h1>
+            <div className='flex justify-around ml-5 mt-5'>
+              <p>Subtotal</p>
+              <p>Rs. 25,000.00</p>
+            </div>
+            <div className='flex justify-around ml-5 mt-5'>
+              <p>Shipping</p>
+              <p>Rs. 25,000.00</p>
+            </div>
+            <div className='flex justify-around ml-5 mt-5'>
+              <p>Total</p>
+              <p>Rs. 25,000.00</p>
+            </div>
+            <button className='border-2 border-black mt-9 ml-16 w-[236px] h-[58px] rounded-2xl '>Checkout</button>
+            </div>
+          </div>
+        </div>
+        
+        <div className='grid grid-cols-3 gap-x-5 bg-secondary py-16 mx-auto my-20 2xl:w-[1600px]'>
+          <div className='text-center'> 
+            <h1 className='text-4xl font-semibold'>Free Delivery</h1>
+            <p className='text-[#9F9F9F]'>For all oders over $50, consectetur <br /> adipim scing elit.</p>
+          </div>
+          <div className='text-center'> 
+            <h1 className='text-4xl font-semibold'>90 Days Return</h1>
+            <p className='text-[#9F9F9F]'>If goods have problems, consectetur <br />adipim scing elit.</p>
+          </div>
+          <div className='text-start'> 
+            <h1 className='text-4xl font-semibold'>Secure Payment</h1>
+            <p className='text-[#9F9F9F]'>If goods have problems, consectetur <br />adipim scing elit.</p>
+          </div>
 
+        </div>
+      
+    </div>
   )
 }

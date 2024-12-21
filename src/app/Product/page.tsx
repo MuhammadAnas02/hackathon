@@ -8,6 +8,7 @@ import top1 from '@/../Public/assets/top1.png'
 import top2 from '@/../Public/assets/top2.png'
 import top3 from '@/../Public/assets/top3.png'
 import top4 from '@/../Public/assets/top4.png'
+import { PiGreaterThanLight } from 'react-icons/pi'
 export default function Product() {
   return (
     <div className='w-full' >
@@ -18,7 +19,8 @@ export default function Product() {
     {/* //there is a breadcrumb but i dont have time to put this here */}
         <div className='flex mx-[740px]'>
         <Link href={'/'} className='font-bold'>Home</Link>
-        <Link href={'/Product'}>>products</Link>
+        <PiGreaterThanLight size={15} className='mt-1.5'/> 
+        <Link href={'/Product'}>products</Link>
         </div>
 
       </div>

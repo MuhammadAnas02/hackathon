@@ -4,6 +4,7 @@ import Image from 'next/image'
 import logo from '@/../Public/assets/logo.png'
 import product from '@/../Public/assets/product.png'
 import React from 'react'
+import { PiGreaterThanLight } from 'react-icons/pi'
 
 export default function MyContact() {
   return (
@@ -16,7 +17,8 @@ export default function MyContact() {
     {/* //there is a breadcrumb but i dont have time to put this here */}
         <div className='flex mx-[740px]'>
         <Link href={'/'} className='font-bold'>Home</Link>
-        <Link href={'/Product'}> >MyAccount</Link>
+        <PiGreaterThanLight size={15} className='mt-1.5'/> 
+        <Link href={'/Product'}>MyAccount</Link>
         </div>
 
       </div>
