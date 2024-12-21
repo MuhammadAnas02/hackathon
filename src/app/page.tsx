@@ -11,7 +11,7 @@ import Instagram from "./Components/Instagram";
 export default function Home() {
   return (
 <>
-<div className="w-full h-[1440]   ">
+<div className="w-full h-[1442]   ">
     <div className=" flex mx-auto 2xl:w-[1600px]  bg-primary  w-[100%]">
       <div className="mt-[380px] ml-[230px] ">
         <h1 className="text-7xl font-semibold">
@@ -21,6 +21,7 @@ export default function Home() {
       </div>
       <div className="-mt-8 -ml-9 ">
         <Image src={Banner} alt="Banner" width={846} height={1250} className="object-cover" ></Image>
+        
       </div>
     </div>
    </div>
