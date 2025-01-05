@@ -1,15 +1,25 @@
+
 import React from 'react'
 import product from '@/../Public/assets/product.png'
 import Link from 'next/link'
 import Image from 'next/image'
 import logo from '@/../Public/assets/logo.png'
 import { CgMenuGridO } from "react-icons/cg";
-import top1 from '@/../Public/assets/top1.png'
-import top2 from '@/../Public/assets/top2.png'
-import top3 from '@/../Public/assets/top3.png'
-import top4 from '@/../Public/assets/top4.png'
+
+
 import { PiGreaterThanLight } from 'react-icons/pi'
-export default function Product() {
+import { client } from '@/sanity/lib/client'
+import { urlFor} from '@/sanity/lib/image'
+
+export const getProduct = async()=>{
+  const res = await client.fetch(`*[_type=="product"]`)
+  return res
+  
+}
+
+
+export default async function Product() {
+  const data = await getProduct()
   return (
     <div className='w-full' >
       <div className='w-full mx-auto h-[316px] 2xl:w-[1600px] object-fill' style={{ backgroundImage: `url(${product.src})` }}>
@@ -46,112 +56,19 @@ export default function Product() {
 
       <div className='mx-auto 2xl:w-[1600px] bg-white'>
 
-      <div className='grid grid-cols-4 px-16 '>
+   <div className='grid grid-cols-4 px-16'>
+    {data.map((datas,id)=>(
+      <div key={id}>
+        <Image src={urlFor(datas.image).url()} width={287} height={287} alt='Hello'/>
+        <p>{datas.Title}</p>
 
-<div>
-  <Image src={top1} alt='top1 ' width={287} height={287}></Image>
-  <p className='text-black mt-4'>Trenton modular sofa_3</p>
-  <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-</div>
-<div className='pt-10'>
-<Image src={top2} alt='top1'width={287} height={287}></Image>
-<p className='text-black mt-14'>Granite dining table with <br /> dining chair</p>
-<h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-</div>
-<div className='pl-4 -mt-9' >
-<Image src={top3} alt='top1' width={287} height={287}></Image>
-<p className='text-black mt-14'>Outdoor bar table and <br /> stool</p>
-  <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-</div>
-<div className='pt-10'>
-<Image src={top4} alt='top1' width={287} height={287}></Image>
-<p className='text-black mt-14'>Plain console with teak <br /> mirror</p>
-  <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-</div>
-
-</div>
-
-
-
-<div className='grid grid-cols-4 px-16 '>
-
-        <div>
-          <Image src={top1} alt='top1 ' width={287} height={287}></Image>
-          <p className='text-black mt-4'>Trenton modular sofa_3</p>
-          <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-        <div className='pt-10'>
-        <Image src={top2} alt='top1'width={287} height={287}></Image>
-        <p className='text-black mt-14'>Granite dining table with <br /> dining chair</p>
-        <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-        <div className='pl-4 -mt-9' >
-        <Image src={top3} alt='top1' width={287} height={287}></Image>
-        <p className='text-black mt-14'>Outdoor bar table and <br /> stool</p>
-          <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-        <div className='pt-10'>
-        <Image src={top4} alt='top1' width={287} height={287}></Image>
-        <p className='text-black mt-14'>Plain console with teak <br /> mirror</p>
-          <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
 
       </div>
+    ))}
+   </div>
 
 
 
-      <div className='grid grid-cols-4 px-16 '>
-
-        <div>
-          <Image src={top1} alt='top1 ' width={287} height={287}></Image>
-          <p className='text-black mt-4'>Trenton modular sofa_3</p>
-          <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-        <div className='pt-10'>
-        <Image src={top2} alt='top1'width={287} height={287}></Image>
-        <p className='text-black mt-14'>Granite dining table with <br /> dining chair</p>
-        <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-        <div className='pl-4 -mt-9' >
-        <Image src={top3} alt='top1' width={287} height={287}></Image>
-        <p className='text-black mt-14'>Outdoor bar table and <br /> stool</p>
-          <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-        <div className='pt-10'>
-        <Image src={top4} alt='top1' width={287} height={287}></Image>
-        <p className='text-black mt-14'>Plain console with teak <br /> mirror</p>
-          <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-
-      </div>
-
-
-
-      <div className='grid grid-cols-4 px-16 '>
-
-        <div>
-          <Image src={top1} alt='top1 ' width={287} height={287}></Image>
-          <p className='text-black mt-4'>Trenton modular sofa_3</p>
-          <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-        <div className='pt-10'>
-        <Image src={top2} alt='top1'width={287} height={287}></Image>
-        <p className='text-black mt-14'>Granite dining table with <br /> dining chair</p>
-        <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-        <div className='pl-4 -mt-9' >
-        <Image src={top3} alt='top1' width={287} height={287}></Image>
-        <p className='text-black mt-14'>Outdoor bar table and <br /> stool</p>
-          <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-        <div className='pt-10'>
-        <Image src={top4} alt='top1' width={287} height={287}></Image>
-        <p className='text-black mt-14'>Plain console with teak <br /> mirror</p>
-          <h1 className='text-black text-xl font-semibold'>Rs. 25,000.00</h1>
-        </div>
-
-      </div>
-        
         <div className='flex justify-center gap-x-5 my-[110px] '>
 
           <div className='bg-[#FBEBB5] px-5 py-3 rounded-xl'>1</div>

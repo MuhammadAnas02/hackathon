@@ -19,12 +19,13 @@ import Link from 'next/link'
 
 
 
-export default function page() {
+export default function page({props: any}) {
+    console.log(props.params.product)
   return (
     <div className='w-full h-[100%]'>
         <div className=' mt-9 ml-32 flex mb-3   '>
-            <Link href={'/'}>Home  > </Link>
-            <Link href={'/Product'} className='mx-6'>Product > </Link>
+            <Link href={'/'}>Home </Link>
+            <Link href={'/Product'} className='mx-6'>Product </Link>
             <p className='font-semibold mx-4'> | </p>
             <Link href={'/SingleProduct'} className='font-semibold'>Asgaard sofa
             </Link>
