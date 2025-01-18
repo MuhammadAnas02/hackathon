@@ -1,11 +1,11 @@
 import Image from "next/image";
 import React from "react";
 import Banner from '@/../Public/assets/image.png'
-import Tables from "./Components/Tables";
-import Topick from "./Components/Topick";
-import NewArrivial from "./Components/NewArrivial";
-import Blogs from "./Components/Blogs";
-import Instagram from "./Components/Instagram";
+import Tables from "@/Components/Tables";
+import Topick from "@/Components/Topick";
+import NewArrivial from "@/Components/NewArrivial";
+import Blogs from "../Components/Blogs";
+import Instagram from "../Components/Instagram";
 
 
 export default function Home() {

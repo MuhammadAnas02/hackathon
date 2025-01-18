@@ -12,7 +12,13 @@ import { client } from '@/sanity/lib/client'
 import { urlFor} from '@/sanity/lib/image'
 
 export const getProduct = async()=>{
-  const res = await client.fetch(`*[_type=="product"]`)
+  const res = await client.fetch(`*[_type== "product"]{
+   title,
+    description,
+    "CurrentSlug" : slug.current,
+    image,
+    price,
+}`)
   return res
   
 }
@@ -31,6 +37,7 @@ export default async function Product() {
         <Link href={'/'} className='font-bold'>Home</Link>
         <PiGreaterThanLight size={15} className='mt-1.5'/> 
         <Link href={'/Product'}>products</Link>
+
         </div>
 
       </div>
@@ -59,8 +66,11 @@ export default async function Product() {
    <div className='grid grid-cols-4 px-16'>
     {data.map((datas,id)=>(
       <div key={id}>
+        <Link href={`/Product/${datas.CurrentSlug}`}>
         <Image src={urlFor(datas.image).url()} width={287} height={287} alt='Hello'/>
-        <p>{datas.Title}</p>
+        </Link>
+        <p>{datas.title}</p>
+        <p>{datas.price}</p>
 
 
       </div>
@@ -91,6 +101,7 @@ export default async function Product() {
             <h1 className='text-4xl font-semibold'>Secure Payment</h1>
             <p className='text-[#9F9F9F]'>If goods have problems, consectetur <br />adipim scing elit.</p>
           </div>
+          
 
         </div>
 

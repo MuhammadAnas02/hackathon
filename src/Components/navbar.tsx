@@ -1,9 +1,13 @@
 import Link from 'next/link';
 import React from 'react'
-import { BsCart3 } from "react-icons/bs";
+// import { BsCart3 } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
 import { FaRegHeart } from "react-icons/fa";
 import { IoIosContact } from "react-icons/io";
+
+
+import { FaCartPlus } from 'react-icons/fa6';
+
 
 export default function Navbar() {
   return (
@@ -18,9 +22,11 @@ export default function Navbar() {
         </ul>
         <ul className='flex gap-x-[30px]  '>
             <li><IoIosContact size={20}/></li>
-            <Link href={'/cart'} > <li><BsCart3 size={20}/></li></Link>
             <li><CiSearch size={20}/></li>
             <li><FaRegHeart size={20}/></li>
+            {/* <li><CartSidebar/></li> */}
+            <Link href={'/cart'}>
+            <FaCartPlus/></Link>
            
 
         </ul>
