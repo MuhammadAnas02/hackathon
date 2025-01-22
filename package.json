@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "import-data": "node scripts/importSanityData.mjs"
+    "lint": "next lint"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
