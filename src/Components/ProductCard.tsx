@@ -1,9 +1,16 @@
-import React from 'react'
+import React from "react";
+import { Product } from "sanity.types"; // Ensure this import matches your schema
 
-export default function ProductCard() {
+interface ProductCardProps {
+  product: Product;
+}
+
+export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div>
-      Product Card
+      <h2>{product.name}</h2>
+      <p>{product.description}</p>
+      <span>${product.price}</span>
     </div>
-  )
+  );
 }
