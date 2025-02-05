@@ -1,65 +1,47 @@
 import { client } from "@/sanity/lib/client";
 import { NextResponse } from "next/server";
+ // Ensure this is correctly configured
+import { z } from "zod";
+
+// Define Zod Schema for Order
+const OrderSchema = z.object({
+  name: z.string().min(3, "Name is required"),
+  email: z.string().email("Invalid email"),
+  address: z.string().min(5, "Address is required"),
+  phone: z.string().min(10, "Invalid phone number"),
+  cartItems: z.array(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      price: z.number(),
+      quantity: z.number(),
+      image: z.string().url().optional(), // Ensure image is a valid URL
+    })
+  ),
+  totalPrice: z.number().min(1, "Total price must be greater than 0"),
+});
 
 export async function POST(req: Request) {
   try {
-    const data = await req.json();
+    const body = await req.json();
+    const parsedData = OrderSchema.parse(body); // Validate request data
 
-    const {
-      name,
-      userEmail,
-      phone,
-      address,
-      paymentMethod,
-      cart,
-      totalPrice,
-      orderDate,
-      status,
-    } = data;
-
-    // Validate incoming data (optional but recommended)
-    if (
-      !name ||
-      !userEmail ||
-      !phone ||
-      !address ||
-      !paymentMethod ||
-      !cart ||
-      !totalPrice ||
-      !orderDate ||
-      !status
-    ) {
-      return NextResponse.json(
-        { message: "Invalid input data" },
-        { status: 400 }
-      );
-    }
-
-    const newOrder = await client.create({
+    // Prepare the order data for Sanity
+    const orderData = {
       _type: "order",
-      name,
-      userEmail,
-      phone,
-      address,
-      paymentMethod,
-      totalPrice,
-      orderDate,
-      status,
-      cart: cart.map((item: any) => ({
-        _type: "reference",
-        _ref: item.id,
+      ...parsedData,
+      cartItems: parsedData.cartItems.map((item) => ({
+        _key: item.id,
+        ...item,
       })),
-    });
+    };
 
-    return NextResponse.json(
-      { message: "Order added successfully", order: newOrder },
-      { status: 201 }
-    );
+    // Save the order to Sanity
+    const result = await client.create(orderData);
+
+    return NextResponse.json({ success: true, orderId: result._id }, { status: 201 });
   } catch (error) {
-    console.error("Failed to create order:", error);
-    return NextResponse.json(
-      { message: "sucess to create order", error: 'invalid'},
-      { status: 500 }
-    );
+    console.error("Error in /api/order:", error);
+    return NextResponse.json({ success: false, message: "Server error", error }, { status: 500 });
   }
 }

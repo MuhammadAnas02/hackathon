@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { createContext, useContext, useState } from "react";
 
 interface CartItem {
@@ -11,9 +11,11 @@ interface CartItem {
 
 interface CartContextType {
   cart: CartItem[];
+  totalPrice: number; // Added totalPrice
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void; // Update quantity function
+  updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void; // Added clearCart
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -54,8 +56,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   };
 
+  // Clear cart
+  const clearCart = () => {
+    setCart([]);
+  };
+
+  // Calculate total price
+  const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity }}>
+    <CartContext.Provider
+      value={{ cart, totalPrice, addToCart, removeFromCart, updateQuantity, clearCart }}
+    >
       {children}
     </CartContext.Provider>
   );

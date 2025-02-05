@@ -13,7 +13,7 @@ export default function Home() {
 <>
 <div className="w-full h-auto">
   <div className="flex flex-col md:flex-row mx-auto 2xl:w-[1600px] bg-primary w-full">
-    {/* Text Content */}
+
     <div className="mt-[100px] md:mt-[380px] ml-6 md:ml-[230px] text-center md:text-left">
       <h1 className="text-4xl md:text-7xl font-semibold">
         Rocket single <br /> <span>Seater</span>
@@ -23,7 +23,6 @@ export default function Home() {
       </p>
     </div>
 
-    {/* Image Section */}
     <div className="mt-8  md:-mt-8 md:-ml-9 flex justify-center">
       <Image
         src={Banner}

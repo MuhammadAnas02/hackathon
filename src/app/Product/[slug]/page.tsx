@@ -243,7 +243,7 @@ const fetchProduct = async (slug: string) => {
   const query = `*[_type=="product" && slug.current == '${slug}']{
     "id": _id,
     "slug": slug.current,
-    title,
+    name,
     description,
     image,
     price,
@@ -268,7 +268,7 @@ export default function SingleProduct({ params }: { params: { slug: string } }) 
     if (singleProduct) {
       addToCart({
         id: singleProduct.id,
-        title: singleProduct.title,
+        title: singleProduct.name,
         price: singleProduct.price,
         image: urlFor(singleProduct.image).url(),
         quantity: 1,
@@ -295,7 +295,7 @@ export default function SingleProduct({ params }: { params: { slug: string } }) 
         Product
       </Link>
       <span className="text-gray-400">/</span>
-      <span className="font-semibold text-gray-800">{singleProduct.title}</span>
+      <span className="font-semibold text-gray-800">{singleProduct.name}</span>
     </div>
   
     
@@ -314,7 +314,7 @@ export default function SingleProduct({ params }: { params: { slug: string } }) 
       {/* Product Info */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-black mb-4">
-          {singleProduct.title}
+          {singleProduct.name}
         </h1>
         <p className="text-sm md:text-lg text-gray-600 mb-4 leading-relaxed">
           {singleProduct.description}

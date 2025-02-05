@@ -1,58 +1,97 @@
-"use client"
-import React from "react";
-import { useForm } from "react-hook-form";
+// components/CheckoutForm.tsx
+"use client";
+import React, { useState } from "react";
+import { useCart } from "@/app/context/CartContext";
+import { checkoutSchema } from "@/lib/checkoutschema";
+import { z } from "zod";
 
-interface Props {
-  cart: { id: string; title: string; price: number; quantity: number }[];
-  totalPrice: number;
-  onClose: () => void;
-}
+export default function CheckoutForm() {
+  const { cart } = useCart();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+  });
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-export default function CheckoutForm({ cart, totalPrice,  onClose }: Props) {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const onSubmit = async (data: any) => {
-    const {userId, userEmail, quantity, totalPrice, orderDate, status, address, postId} = data
-
+    // Validate the form data using Zod
     try {
-      const res = await fetch("/api/order", {
+      checkoutSchema.parse(formData); // Will throw an error if invalid
+      setIsSubmitting(true);
+
+      // Submit data to the API
+      const response = await fetch("/api/order", {
         method: "POST",
-        body: JSON.stringify({userId, userEmail, quantity, totalPrice, orderDate, status, address, postId}),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, cartItems: cart }),
       });
-      const result = await res.json();
-      if (res.ok) {
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Redirect or show success message
         alert("Order placed successfully!");
-        onClose();
       } else {
-        console.error(result);
-        alert("Failed to place order.");
+        setError("Failed to place order");
       }
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred.");
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setError(err.errors[0].message); // Display the first error
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-      <label>Name</label>
-      <input {...register("name", { required: true })} />
-      {errors.name && <p>Name is required.</p>}
+    <form onSubmit={handleSubmit} className="w-full md:w-[600px] mx-auto mt-6">
+      <div className="flex flex-col gap-4">
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          placeholder="Your Name"
+          className="border p-2"
+        />
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          placeholder="Email"
+          className="border p-2"
+        />
+        <input
+          type="text"
+          name="phone"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          placeholder="Phone Number"
+          className="border p-2"
+        />
+        <textarea
+          name="address"
+          value={formData.address}
+          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+          placeholder="Shipping Address"
+          className="border p-2"
+        />
+      </div>
 
-      <label>Email</label>
-      <input {...register("email", { required: true, pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/ })} />
-      {errors.email && <p>Valid email is required.</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
-      <label>Address</label>
-      <textarea {...register("address", { required: true })} />
-      {errors.address && <p>Address is required.</p>}
-
-      
-
-
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Submitting..." : "Place Order"}
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="mt-4 p-2 bg-blue-500 text-white w-full"
+      >
+        {isSubmitting ? "Processing..." : "Place Order"}
       </button>
     </form>
   );

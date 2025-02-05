@@ -1,151 +1,132 @@
 "use client";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useCart } from "@/app/context/CartContext";
+import Button from "@mui/material/Button";  
+import { z } from "zod";
+import { FaStripe } from "react-icons/fa";
 
-interface Props {
-  cart: { id: string; title: string; price: number; quantity: number }[];
-  totalPrice: number;
-  onClose: () => void;
-}
+const orderSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email format"),
+  address: z.string().min(10, "Address must be at least 10 characters"),
+  phone: z.string().min(10, "Invalid phone number"),
+});
 
-export default function CheckoutForm({ cart, totalPrice, onClose }: Props) {
+export default function Checkout() {
+  const { cart, totalPrice, clearCart } = useCart();
+  const handleCheckout = async () => {
+    if (cart.length === 0) {
+      alert('Your cart is empty!');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ products: cart }), // Send cart items to the API
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url; // Redirect to Stripe Checkout
+      } else {
+        console.error('Error during checkout:', data.error);
+      }
+    } catch (error) {
+      console.error('Failed to create checkout session:', error);
+    }
+  };
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm();
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(orderSchema),
+  });
 
   const onSubmit = async (data: any) => {
-    const { name, email, phone, address, city, state, postalCode, paymentMethod } = data;
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+
+    // ✅ Ensure valid image URLs before sending data
+    const orderData = {
+      ...data,
+      cartItems: cart.map((item) => ({
+        id: item.id,
+        title: item.title,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image || "/default-avatar.png", //
+      })),
+      totalPrice,
+    };
 
     try {
-      const res = await fetch("/api/order", {
+      const response = await fetch("/api/order", {
         method: "POST",
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          address: `${address}, ${city}, ${state}, ${postalCode}`,
-          paymentMethod,
-          cart,
-          totalPrice,
-          status: "Pending",
-        }),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
       });
 
-      const result = await res.json();
-      if (res.ok) {
-        alert("Order placed successfully!");
-        onClose();
-      } else {
-        console.error(result);
-        alert("Failed to place order.");
-      }
+      if (!response.ok) throw new Error("Failed to place order");
+
+      const result = await response.json();
+      alert("Order placed successfully!");
+      clearCart(); // Clear cart after successful order
     } catch (error) {
-      console.error(error);
-      alert("An error occurred.");
+      console.error("Order Error:", error);
+      alert("Error placing order. Try again.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 p-4">
-      {/* Name */}
-      <label>Name</label>
-      <input
-        {...register("name", { required: "Name is required." })}
-        className="border p-2 rounded"
-      />
-      {errors.name && <p className="text-red-500">{"valid name"}</p>}
+    <div className="max-w-lg mx-auto p-5 bg-white shadow-lg rounded-lg">
+      <h1 className="text-2xl font-bold text-center mb-5">Checkout</h1>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <input {...register("name")} placeholder="Full Name" className="border p-2 w-full" />
+        {errors.name && <p className="text-red-500">{errors.name.message}</p>}
 
-      {/* Email */}
-      <label>Email</label>
-      <input
-        {...register("email", {
-          required: "Valid email is required.",
-          pattern: {
-            value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-            message: "Invalid email format.",
-          },
-        })}
-        className="border p-2 rounded"
-      />
-      {errors.email && <p className="text-red-500">{""}</p>}
+        <input {...register("email")} placeholder="Email" className="border p-2 w-full" />
+        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-      {/* Phone */}
-      <label>Phone</label>
-      <input
-        {...register("phone", {
-          required: "Phone number is required.",
-          pattern: {
-            value: /^[0-9]{10,15}$/,
-            message: "Enter a valid phone number.",
-          },
-        })}
-        className="border p-2 rounded"
-      />
-      {errors.phone && <p className="text-red-500">Phone number</p>}
+        <input {...register("address")} placeholder="Address" className="border p-2 w-full" />
+        {errors.address && <p className="text-red-500">{errors.address.message}</p>}
 
-      {/* Address */}
-      <label>Address</label>
-      <textarea
-        {...register("address", { required: "Address is required." })}
-        className="border p-2 rounded"
-      />
-      {errors.address && <p className="text-red-500">address</p>}
+        <input {...register("phone")} placeholder="Phone Number" className="border p-2 w-full" />
+        {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
 
-      {/* City */}
-      <label>City</label>
-      <input
-        {...register("city", { required: "City is required." })}
-        className="border p-2 rounded"
-      />
-      {errors.city && <p className="text-red-500">city</p>}
-
-      {/* State */}
-      <label>State</label>
-      <input
-        {...register("state", { required: "State is required." })}
-        className="border p-2 rounded"
-      />
-      {errors.state && <p className="text-red-500">state</p>}
-
-      {/* Postal Code */}
-      <label>Postal Code</label>
-      <input
-        {...register("postalCode", {
-          required: "Postal Code is required.",
-          pattern: {
-            value: /^[0-9]{5,10}$/,
-            message: "Enter a valid postal code.",
-          },
-        })}
-        className="border p-2 rounded"
-      />
-      {errors.postalCode && <p className="text-red-500">Postal code</p>}
-
-      {/* Payment Method */}
-      <label>Payment Method</label>
-      <select
-        {...register("paymentMethod", { required: "Payment method is required." })}
-        className="border p-2 rounded"
-      >
-        <option value="">Select Payment Method</option>
-        <option value="Credit Card">Credit Card</option>
-        <option value="Debit Card">Debit Card</option>
-        <option value="PayPal">PayPal</option>
-        <option value="Cash on Delivery">Cash on Delivery</option>
-      </select>
-      {errors.paymentMethod && <p className="text-red-500">valid payment</p>}
-
-      {/* Submit Button */}
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-      >
-        {isSubmitting ? "Submitting..." : "Place Order"}
-      </button>
-    </form>
+        <button type="submit" className="bg-black text-white px-4 py-2 rounded-md w-full">
+          Place Order
+        </button>
+        <Button
+  onClick={handleCheckout}
+  variant="contained"
+  sx={{
+    backgroundColor: "#635BFF", // Stripe brand color
+    color: "white",
+    padding: "12px 20px",
+    borderRadius: "8px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    textTransform: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "8px", // Spacing between text & icon
+    "&:hover": { backgroundColor: "#5045e6" }, // Hover effect
+  }}
+  fullWidth
+>
+  <FaStripe size={20} />
+  Pay with Stripe
+</Button>
+      </form>
+    </div>
   );
 }
