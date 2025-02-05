@@ -17,23 +17,21 @@ export default function Product() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const query = `*[_type == 'product' && variant == $variant] | order(name desc) {
-    _id,
-    name,
-    slug,
-    description,
-    price,
-    discount,
-    image
-  }`;
-
-  const params = { variant: SelectedTab.toLowerCase() };
-
   useEffect(() => {
     const fetchData = async () => {
-      if (!SelectedTab) return; // Don't fetch if no tab is selected
+      if (!SelectedTab) return;
       setLoading(true);
       try {
+        const params = { variant: SelectedTab.toLowerCase() };
+        const query = `*[_type == 'product' && variant == $variant] | order(name desc) {
+          _id,
+          name,
+          slug,
+          description,
+          price,
+          discount,
+          image
+        }`;
         const res = await client.fetch(query, params);
         setProducts(res);
       } catch (error) {
@@ -44,9 +42,8 @@ export default function Product() {
     };
 
     fetchData();
-  }, [SelectedTab]);
+  }, [SelectedTab]); // Only SelectedTab is needed as a dependency
 
-  // Filter products based on the search term
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -73,9 +70,7 @@ export default function Product() {
         <Image src={logo} alt="logo" className="mx-auto pt-[20px] md:pt-[40px] w-[60px] md:w-[90px]" />
         <h1 className="text-center text-2xl md:text-3xl font-bold pt-[10px]">Shop</h1>
         <div className="flex justify-center md:justify-start mx-auto md:mx-[740px] text-sm md:text-base">
-          <Link href="/" className="font-bold">
-            Home
-          </Link>
+          <Link href="/" className="font-bold">Home</Link>
           <PiGreaterThanLight size={15} className="mt-1.5 mx-2" />
           <Link href="/Product">Products</Link>
         </div>
@@ -116,10 +111,7 @@ export default function Product() {
             <div className="col-span-full text-center">Loading...</div>
           ) : filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <div
-                key={product._id}
-                className="border rounded-lg overflow-hidden shadow-md flex flex-col items-center text-center bg-white relative"
-              >
+              <div key={product._id} className="border rounded-lg overflow-hidden shadow-md flex flex-col items-center text-center bg-white relative">
                 <div className="relative w-full h-[200px] sm:h-[287px]">
                   <Link href={`/Product/${product.slug.current}`}>
                     <Image
@@ -136,10 +128,9 @@ export default function Product() {
                   <p className="text-red-500 font-semibold text-sm sm:text-base">
                     ${(product.price - product.discount).toFixed(2)}
                   </p>
-                  {/* Add to Cart Button */}
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="xl:px-[100px] mt-2 px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border-black border-2  rounded-lg hover:bg-black hover:text-white text-xs sm:text-base"
+                    className="xl:px-[100px] mt-2 px-3 sm:px-4 py-1 sm:py-2 bg-white text-black border-black border-2 rounded-lg hover:bg-black hover:text-white text-xs sm:text-base"
                   >
                     Add to Cart
                   </button>
@@ -147,9 +138,7 @@ export default function Product() {
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center text-gray-500">
-              No products found.
-            </div>
+            <div className="col-span-full text-center text-gray-500">No products found.</div>
           )}
         </div>
 

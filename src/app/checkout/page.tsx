@@ -3,7 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCart } from "@/app/context/CartContext";
-import Button from "@mui/material/Button";  
+import Button from "@mui/material/Button";
 import { z } from "zod";
 import { FaStripe } from "react-icons/fa";
 
@@ -16,6 +16,14 @@ const orderSchema = z.object({
 
 export default function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof orderSchema>>({
+    resolver: zodResolver(orderSchema),
+  });
+
   const handleCheckout = async () => {
     if (cart.length === 0) {
       alert('Your cart is empty!');
@@ -26,12 +34,12 @@ export default function Checkout() {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ products: cart }), // Send cart items to the API
+        body: JSON.stringify({ products: cart }),
       });
 
       const data = await response.json();
       if (data.url) {
-        window.location.href = data.url; // Redirect to Stripe Checkout
+        window.location.href = data.url;
       } else {
         console.error('Error during checkout:', data.error);
       }
@@ -40,21 +48,12 @@ export default function Checkout() {
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(orderSchema),
-  });
-
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: z.infer<typeof orderSchema>) => {
     if (cart.length === 0) {
       alert("Your cart is empty!");
       return;
     }
 
-    // ✅ Ensure valid image URLs before sending data
     const orderData = {
       ...data,
       cartItems: cart.map((item) => ({
@@ -62,7 +61,7 @@ export default function Checkout() {
         title: item.title,
         price: item.price,
         quantity: item.quantity,
-        image: item.image || "/default-avatar.png", //
+        image: item.image || "/default-avatar.png",
       })),
       totalPrice,
     };
@@ -76,9 +75,9 @@ export default function Checkout() {
 
       if (!response.ok) throw new Error("Failed to place order");
 
-      const result = await response.json();
+      await response.json();
       alert("Order placed successfully!");
-      clearCart(); // Clear cart after successful order
+      clearCart();
     } catch (error) {
       console.error("Order Error:", error);
       alert("Error placing order. Try again.");
@@ -105,27 +104,27 @@ export default function Checkout() {
           Place Order
         </button>
         <Button
-  onClick={handleCheckout}
-  variant="contained"
-  sx={{
-    backgroundColor: "#635BFF", // Stripe brand color
-    color: "white",
-    padding: "12px 20px",
-    borderRadius: "8px",
-    fontSize: "16px",
-    fontWeight: "bold",
-    textTransform: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "8px", // Spacing between text & icon
-    "&:hover": { backgroundColor: "#5045e6" }, // Hover effect
-  }}
-  fullWidth
->
-  <FaStripe size={20} />
-  Pay with Stripe
-</Button>
+          onClick={handleCheckout}
+          variant="contained"
+          sx={{
+            backgroundColor: "#635BFF",
+            color: "white",
+            padding: "12px 20px",
+            borderRadius: "8px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            textTransform: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            "&:hover": { backgroundColor: "#5045e6" },
+          }}
+          fullWidth
+        >
+          <FaStripe size={20} />
+          Pay with Stripe
+        </Button>
       </form>
     </div>
   );

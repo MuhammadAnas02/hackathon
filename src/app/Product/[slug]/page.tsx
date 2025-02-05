@@ -231,15 +231,24 @@
 //     </div>
 //   )
 // }
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCart } from '../../context/CartContext'; // Ensure the path is correct
+import { useCart } from "../../context/CartContext"; // Ensure the path is correct
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 
-const fetchProduct = async (slug: string) => {
+interface Product {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  image: any;
+  price: number;
+}
+
+const fetchProduct = async (slug: string): Promise<Product | null> => {
   const query = `*[_type=="product" && slug.current == '${slug}']{
     "id": _id,
     "slug": slug.current,
@@ -253,7 +262,7 @@ const fetchProduct = async (slug: string) => {
 
 export default function SingleProduct({ params }: { params: { slug: string } }) {
   const { addToCart } = useCart(); 
-  const [singleProduct, setSingleProduct] = useState<any>(null);
+  const [singleProduct, setSingleProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const getProduct = async () => {
@@ -286,81 +295,76 @@ export default function SingleProduct({ params }: { params: { slug: string } }) 
 
   return (
     <div className="container mx-auto px-4 py-8">
-    <div className="flex flex-wrap items-center space-x-2 text-gray-500 mb-8 text-sm md:text-base">
-      <Link href="/" className="hover:text-gray-800">
-        Home
-      </Link>
-      <span className="text-gray-400">/</span>
-      <Link href="/Product" className="hover:text-gray-800">
-        Product
-      </Link>
-      <span className="text-gray-400">/</span>
-      <span className="font-semibold text-gray-800">{singleProduct.name}</span>
-    </div>
-  
-    
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-
-      <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
-        <Image
-          src={urlFor(singleProduct.image).url()}
-          alt="product"
-          width={400}
-          height={500}
-          className="rounded-lg object-cover"
-        />
+      <div className="flex flex-wrap items-center space-x-2 text-gray-500 mb-8 text-sm md:text-base">
+        <Link href="/" className="hover:text-gray-800">
+          Home
+        </Link>
+        <span className="text-gray-400">/</span>
+        <Link href="/Product" className="hover:text-gray-800">
+          Product
+        </Link>
+        <span className="text-gray-400">/</span>
+        <span className="font-semibold text-gray-800">{singleProduct.name}</span>
       </div>
-  
-      {/* Product Info */}
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-black mb-4">
-          {singleProduct.name}
-        </h1>
-        <p className="text-sm md:text-lg text-gray-600 mb-4 leading-relaxed">
-          {singleProduct.description}
-        </p>
-        <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-6">
-          Rs. {singleProduct.price}
-        </h2>
-  
-        <button
-          onClick={handleAddToCart}
-          className="bg-black text-white py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-800 transition duration-300 w-full md:w-auto text-sm md:text-base"
-        >
-          Add to Cart
-        </button>
-      </div>
-    </div>
-  
 
-    <div className="mt-16">
-      <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-6">
-        Related Products
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {[1, 2, 3, 4].map((item) => (
-          <div
-            key={item}
-            className="bg-gray-100 p-4 rounded-lg text-center hover:shadow-md transition duration-300"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
+          <Image
+            src={urlFor(singleProduct.image).url()}
+            alt="product"
+            width={400}
+            height={500}
+            className="rounded-lg object-cover"
+          />
+        </div>
+
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-black mb-4">
+            {singleProduct.name}
+          </h1>
+          <p className="text-sm md:text-lg text-gray-600 mb-4 leading-relaxed">
+            {singleProduct.description}
+          </p>
+          <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-6">
+            ${singleProduct.price}
+          </h2>
+
+          <button
+            onClick={handleAddToCart}
+            className="bg-black text-white py-2 md:py-3 px-4 md:px-6 rounded-lg hover:bg-gray-800 transition duration-300 w-full md:w-auto text-sm md:text-base"
           >
-            <Image
-              src={urlFor(singleProduct.image).url()} // Example image
-              alt="Related Product"
-              width={200}
-              height={200}
-              className="rounded-lg mx-auto object-cover"
-            />
-            <p className="text-base md:text-lg text-gray-700 mt-4">
-              Sample Product {item}
-            </p>
-            <p className="text-lg md:text-xl font-semibold text-gray-800 mt-2">
-              Rs. {singleProduct.price}
-            </p>
-          </div>
-        ))}
+            Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-16">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-6">
+          Related Products
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((item) => (
+            <div
+              key={item}
+              className="bg-gray-100 p-4 rounded-lg text-center hover:shadow-md transition duration-300"
+            >
+              <Image
+                src={urlFor(singleProduct.image).url()} 
+                alt="Related Product"
+                width={200}
+                height={200}
+                className="rounded-lg mx-auto object-cover"
+              />
+              <p className="text-base md:text-lg text-gray-700 mt-4">
+                Sample Product {item}
+              </p>
+              <p className="text-lg md:text-xl font-semibold text-gray-800 mt-2">
+                Rs. {singleProduct.price}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-  
   );
 }
